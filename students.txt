@@ -1,0 +1,3 @@
+Smirnov;Java Basics,400,2015;Clean Code,450,2008;Dune,800,1965;1984,328,1949;Hobbit,310,1937
+Tretyakov;Clean Code,450,2008;Refactoring,430,1999;Patterns,395,1994;Matrix,250,2003;Java Basics,400,2015
+Sidorov;Harry Potter,500,2001;Twilight,400,2005;1984,328,1949;Dune,800,1965;Core Java,900,2022

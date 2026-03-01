@@ -1,37 +1,59 @@
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-class Score {
-    int points = 0; 
-}
+record Book(String title, int pages, int year) {}
 
-final class GameResult {
-    
-    private final Score safeScore; 
+class Student {
+    String name;
+    List<Book> books;
 
-    GameResult(Score inputScore) {
-        this.safeScore = new Score(); 
-        this.safeScore.points = inputScore.points;
+    Student(String name, List<Book> books) {
+        this.name = name;
+        this.books = books;
     }
 
-    Score getScore() {
-        Score copyShow = new Score(); 
-        copyShow.points = this.safeScore.points; 
-        return copyShow;
+    @Override
+    public String toString() { 
+        return "Student: " + name; 
     }
 }
 
 public class Main {
-    public static void main(String[] args) {
+    
+    public static void main(String[] args) throws Exception {
         
-        Score score = new Score();
-        score.points = 100;
-        System.out.println("My Score: " + score.points);
+        List<Student> students = new ArrayList<>();
+        Scanner scanner = new Scanner(new File("students.txt"));
+        
+        while (scanner.hasNextLine()) {
+            String[] parts = scanner.nextLine().split(";");
+            List<Book> books = new ArrayList<>();
+            
+            for (int i = 1; i < parts.length; i++) {
+                String[] b = parts[i].split(",");
+                books.add(new Book(b[0], Integer.parseInt(b[1]), Integer.parseInt(b[2])));
+            }
+            students.add(new Student(parts[0], books));
+        }
+        scanner.close();
 
-        GameResult result = new GameResult(score);
+        System.out.println("--- Start ---");
 
-        score.points = 101; 
-        System.out.println("Trying to change Score: " + score.points);
-
-        Score scoreFromSafe = result.getScore();
-        System.out.println("Approve of immutable Score: " + scoreFromSafe.points);
+        students.stream()
+            .peek(s -> System.out.println(s))
+            .map(s -> s.books)                    
+            .flatMap(list -> list.stream())
+            .sorted((b1, b2) -> Integer.compare(b1.pages(), b2.pages()))
+            .distinct()
+            .filter(b -> b.year() > 2000)
+            .limit(3)
+            .map(b -> b.year())
+            .findFirst()
+            .ifPresentOrElse(
+                year -> System.out.println("Found year: " + year),
+                () -> System.out.println("Book not found")
+            );
     }
 }
